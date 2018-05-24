@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" type="text/css" href="css/practice8.css"/>
+		<script src="js/vue.min(2.5.2).js"></script>
+		<script src="js/vue-router.js"></script>
+		<script src="js/axios.js"></script>
+		<script src="js/vuex.js"></script>
+		<script src="js/rem.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<div class="container">
+			  <header>{{杜雨露}}</header>
+		      <section>
+		       <router-view :datas='infos'></router-view>
+		      </section>
+		      <footer>
+		      	<a v-for="(item,index) in list" :href="item.tourl" @click="btn(index)">{{item.name}}</a>
+		      </footer>
+			</div>
+		 
+		</div>
+		<template id="sy">
+			<div>
+				<div class="main">
+					<ul v-for="(val,index) in datas">
+						<li><img src="img/微信3_06.jpg"/></li>
+						<li>{{val.infos1}}</li>
+					</ul>
+				</div>
+			</div>
+		</template>
+		<script>
+			var homecomp=Vue.extend({
+				template:'#sy',
+				props:['datas'],
+			})
+			var tuicomp=Vue.extend({
+				template:'<div>推荐</div>'
+			})
+			var mycomp=Vue.extend({
+				template:'<div>我的</div>'
+			})
+			var router=new VueRouter({
+				routes:[
+				  {
+				  	path:'/home',
+				  	component:homecomp
+				  },
+				  {
+				  	path:'/tui',
+				  	component:tuicomp
+				  },
+				  {
+				  	path:'/my',
+				  	component:mycomp
+				  }
+				]
+			})
+			var datamodal={
+				infos:[],
+				zhe:'首页',
+				list:[
+				   {
+					name:'首页',
+					tourl:'#/home'
+				   },
+				   {
+					name:'推荐',
+					tourl:'#/tui'
+				   },
+				   {
+					name:'我的',
+					tourl:'#/my'
+				   }
+				]
+			}
+			new Vue({
+				el:'#app',
+				data:datamodal,
+				router,
+				methods:{
+					btn(index){
+						this.zhe=this.list[index].name
+					}
+				},
+				created:function(){
+					var that=this
+					axios.get('js/week.json').then(function(res){
+						that.infos=res.data
+					})
+				}
+			})
+		</script>
+	</body>
+</html>
